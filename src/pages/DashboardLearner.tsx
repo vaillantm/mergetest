@@ -1,0 +1,156 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { PrimaryNav, TopBar } from '../components/LayoutPieces';
+import { Sidebar } from '../components/Sidebars';
+import { api } from '../utils/api';
+
+// Defined types based on your API spec
+interface Lesson {
+  _id: string;
+  title: string;
+  category: string;
+}
+
+interface Quiz {
+  _id: string;
+  title: string;
+  lesson: string;
+}
+
+export default function DashboardLearner() {
+  const [lessons, setLessons] = useState<Lesson[]>([]);
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [userData, setUserData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        // Pulling core data from your defined API routes
+        const [lessonsRes, quizzesRes, userRes] = await Promise.allSettled([
+          api.lessons.list(),     // GET /lessons
+          api.quizzes.list(),     // GET /quizzes
+          api.auth.me()           // GET /auth/me
+        ]);
+
+        if (isMounted) {
+          if (lessonsRes.status === 'fulfilled') {
+            setLessons(lessonsRes.value.data.lessons || []);
+          }
+          if (quizzesRes.status === 'fulfilled') {
+            setQuizzes(quizzesRes.value.data.quizzes || []);
+          }
+          if (userRes.status === 'fulfilled') {
+            setUserData(userRes.value || null);
+          }
+        }
+      } catch (err: any) {
+        if (isMounted) {
+          console.error('Dashboard data fetch error:', err);
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+    return () => { isMounted = false; };
+  }, []);
+
+  const totalLessons = lessons.length;
+  const totalQuizzes = quizzes.length;
+
+  return (
+    <div className="min-h-screen bg-[#f5f8ff] text-slate-800">
+      <TopBar />
+      <PrimaryNav
+        variant="dashboard"
+        items={[
+          { label: 'Home', to: '/' },
+          { label: 'Lessons', to: '/lesson' },
+          { label: 'Quiz', to: '/quiz' }
+        ]}
+      />
+
+      <section className="pt-32 pb-20">
+        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[260px_1fr] gap-8">
+          <Sidebar
+            title="Learner"
+            links={[
+              { label: 'Overview', active: true },
+              { label: 'My Lessons', to: '/lesson' },
+              { label: 'My Quizzes', to: '/quiz' },
+              { label: 'Logout', to: '/login' }
+            ]}
+          />
+
+          <div className="animate-fadeInUp">
+            <div className="mb-8">
+              <p className="text-primary uppercase font-semibold tracking-wider text-sm">Real-time Stats</p>
+              <h1 className="text-4xl font-extrabold gradient-text">Welcome back, {userData?.name || 'Learner'}</h1>
+            </div>
+
+            {loading ? (
+              <div className="flex justify-center items-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <span className="ml-3 text-gray-600">Loading your data...</span>
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <StatCard title="Total Lessons" value={totalLessons} note="Available in catalog" />
+                  <StatCard title="Total Quizzes" value={totalQuizzes} note="Available in catalog" />
+                  
+                </div>
+
+                <div className="grid lg:grid-cols-2 gap-6 mt-8">
+                  {/* Recent Lessons from DB */}
+                  <div className="bg-white rounded-xl p-6 shadow-lg">
+                    <h3 className="text-xl font-bold mb-4">Latest Lessons</h3>
+                    <div className="space-y-4">
+                      {lessons.slice(0, 4).map((lesson) => (
+                        <div key={lesson._id} className="flex items-center justify-between border-b border-gray-50 pb-2">
+                          <div>
+                            <p className="text-sm font-medium">{lesson.title}</p>
+                            <p className="text-xs text-gray-400">{lesson.category}</p>
+                          </div>
+                          <Link to={`/lesson/${lesson._id}`} className="text-primary text-sm font-semibold hover:underline">Start</Link>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Available Quizzes from DB */}
+                  <div className="bg-white rounded-xl p-6 shadow-lg">
+                    <h3 className="text-xl font-bold mb-4">Available Quizzes</h3>
+                    <div className="space-y-4">
+                      {quizzes.slice(0, 4).map((quiz) => (
+                        <div key={quiz._id} className="flex items-center justify-between border-b border-gray-50 pb-2">
+                          <span className="text-sm font-medium">{quiz.title}</span>
+                          <Link to={`/quiz/${quiz._id}`} className="bg-blue-50 text-primary px-3 py-1 rounded text-xs font-bold hover:bg-primary hover:text-white transition">Take Quiz</Link>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function StatCard({ title, value, note, noteColor = "text-gray-500" }: { title: string, value: string | number, note: string, noteColor?: string }) {
+  return (
+    <div className="bg-white rounded-xl p-6 shadow-lg">
+      <p className="text-sm text-gray-500">{title}</p>
+      <h3 className="text-3xl font-bold mt-2">{value}</h3>
+      <p className={`text-xs mt-2 ${noteColor}`}>{note}</p>
+    </div>
+  );
+}
