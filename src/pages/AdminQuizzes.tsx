@@ -45,7 +45,7 @@ export default function AdminQuizzes() {
 
   const rows = quizzes.map((quiz) => ({
     ...quiz,
-    createdBy: quiz.createdBy?.name || quiz.createdBy?.email || quiz.createdBy || '—',
+    createdBy: quiz.createdBy?.name || quiz.createdBy?.email || quiz.createdBy || 'ï¿½',
     questions: Array.isArray(quiz.questions) ? quiz.questions.length : 0
   }));
 

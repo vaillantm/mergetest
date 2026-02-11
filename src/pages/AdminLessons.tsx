@@ -45,7 +45,7 @@ export default function AdminLessons() {
 
   const rows = lessons.map((lesson) => ({
     ...lesson,
-    createdBy: lesson.instructor?.name || lesson.createdBy || lesson.instructor || '—',
+    createdBy: lesson.instructor?.name || lesson.createdBy || lesson.instructor || 'ï¿½',
     images: Array.isArray(lesson.images) ? lesson.images : []
   }));
 

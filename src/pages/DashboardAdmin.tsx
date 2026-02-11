@@ -82,21 +82,21 @@ export default function DashboardAdmin() {
 
   const userRows = users.slice(0, 6).map((item) => ({
     id: item._id,
-    name: item.name || '—',
-    email: item.email || '—',
-    role: item.role || '—'
+    name: item.name || 'ï¿½',
+    email: item.email || 'ï¿½',
+    role: item.role || 'ï¿½'
   }));
 
   const lessonRows = lessons.slice(0, 6).map((item) => ({
     id: item._id,
-    title: item.title || '—',
+    title: item.title || 'ï¿½',
     module: item.category || 'General',
     status: item.isPublished === false ? 'Draft' : 'Published'
   }));
 
   const quizRows = quizzes.slice(0, 6).map((item) => ({
     id: item._id,
-    title: item.title || '—',
+    title: item.title || 'ï¿½',
     module: item.lesson?.title || item.lesson || 'Lesson',
     status: item.isActive === false ? 'Paused' : 'Active'
   }));

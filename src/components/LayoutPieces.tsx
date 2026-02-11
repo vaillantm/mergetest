@@ -212,7 +212,7 @@ export function Footer() {
 
       <div className="border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm">© 2026 EduLearn. All rights reserved.</p>
+          <p className="text-sm">ï¿½ 2026 EduLearn. All rights reserved.</p>
           <div className="flex gap-6 text-sm">
             <span className="hover:text-primary cursor-pointer transition">Privacy Policy</span>
             <span className="hover:text-primary cursor-pointer transition">Terms of Service</span>

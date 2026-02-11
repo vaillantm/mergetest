@@ -1,4 +1,4 @@
-﻿import { useState, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Footer, PrimaryNav, TopBar } from '../components/LayoutPieces';
 import { api } from '../utils/api';
