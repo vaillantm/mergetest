@@ -24,7 +24,7 @@ export default function Home() {
             Transform Learning <br /> with Interactive Education
           </h1>
           <p className="max-w-xl text-lightText mb-8 animate-slideInRight">
-            Experience micro-lessons, interactive quizzes, and track your progress with our comprehensive digital learning platform designed for modern education.
+            Experience micro-lessons, interactive quizzes, and track your progress with digital learning platform designed for modern education.
           </p>
           <div className="flex gap-4 animate-fadeInUp">
             <Link
