@@ -1,2 +1,2 @@
 Readme
-made by Man
+made by Manai
