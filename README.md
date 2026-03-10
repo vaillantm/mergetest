@@ -1,2 +1,2 @@
 Readme
-made by Manai
+made by Manaasas
